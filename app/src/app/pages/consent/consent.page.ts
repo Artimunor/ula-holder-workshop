@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams } from "@ionic/angular";
 import { UlaService } from "../../../service/ula.service";
+import { Log } from '../../../util/log';
 
 @Component({
   selector: 'app-consent',
@@ -20,6 +21,8 @@ export class ConsentPage implements OnInit {
 
   async ngOnInit() {
     this.payload = this.navParams.get('payload');
+
+    Log.info('ConsentPage', 'ngOnInit', 'payload', this.payload);
 
     // Todo payload.confirmAttestations - make a list of these in the HTML page
     // Todo create a consent button and link it to the giveConsent method

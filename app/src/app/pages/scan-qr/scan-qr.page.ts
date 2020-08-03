@@ -26,12 +26,12 @@ export class ScanQrPage {
             // only the browser platform returns the payload inside the result property
             let payload = text.result ? JSON.parse(text.result) : JSON.parse(text)
 
-            Log.info('ulaService','Scanned', payload);
+            Log.info('ScanQrPage', 'qrScanner', 'Scanned', payload);
 
             this.ulaService.sendMessage(payload, async (result: UlaResponse) => {
               // If result.statusCode is 204 or 201, you've received credentials. Show 'succeeded' message
               if(result.statusCode == 204 || result.statusCode == 201) {
-                Log.info('ulaService','sendMessage', 'succeeded');
+                Log.info('ScanQrPage', 'ulaService.sendMessage', 'succeeded');
               }
 
               // If statuscode is 200, ask for consent because the app needs to send credentials:
