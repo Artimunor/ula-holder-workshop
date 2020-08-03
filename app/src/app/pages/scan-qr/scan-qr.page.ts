@@ -3,6 +3,8 @@ import { QRScanner, QRScannerStatus } from '@ionic-native/qr-scanner/ngx';
 import { UlaService } from '../../../service/ula.service';
 import { ModalController } from "@ionic/angular";
 import { Log } from '../../../util/log';
+import { UlaResponse } from 'universal-ledger-agent';
+import { ConsentPage } from '../consent/consent.page';
 
 @Component({
   selector: 'app-scan-qr',
@@ -24,26 +26,29 @@ export class ScanQrPage {
             // only the browser platform returns the payload inside the result property
             let payload = text.result ? JSON.parse(text.result) : JSON.parse(text)
 
-            Log.info('Scanned',payload);
+            Log.info('ulaService','Scanned', payload);
 
-            this.ulaService.sendMessage(payload, async (result /*type: UlaResponse*/) => {
-              // Todo If result.statusCode is 204 or 201, you've received credentials. Show 'succeeded' message
+            this.ulaService.sendMessage(payload, async (result: UlaResponse) => {
+              // If result.statusCode is 204 or 201, you've received credentials. Show 'succeeded' message
+              if(result.statusCode == 204 || result.statusCode == 201) {
+                Log.info('ulaService','sendMessage', 'succeeded');
+              }
 
-              // Todo If statuscode is 200, ask for consent because the app needs to send credentials:
-              /*
-              const modal = await this.modalCtrl.create({
-                component: ConsentPage,
-                componentProps: {
-                  payload: result.body
-                }
-              });
+              // If statuscode is 200, ask for consent because the app needs to send credentials:
+              if(result.statusCode == 200) {
+                const modal = await this.modalCtrl.create({
+                  component: ConsentPage,
+                  componentProps: {
+                    payload: result.body
+                  }
+                });
 
-              modal.onDidDismiss().then(() => {
-                // Restart the camera
-              });
+                modal.onDidDismiss().then(() => {
+                  // Restart the camera
+                });
 
-              modal.present();
-              */
+                modal.present();
+              }
             });
 
             this.qrScanner.hide(); // hide camera preview
